@@ -1,0 +1,272 @@
+{
+  "info": {
+    "_postman_id": "b39982c6-helpdesk-api-2026",
+    "name": "IT Help Desk & Ticketing System API",
+    "description": "Comprehensive Postman collection for testing the Python Flask IT Help Desk REST API. Includes Authentication, Ticket Lifecycle, Comments, Internal Notes, User Management, and Dashboard Stats.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://127.0.0.1:5000/api",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Authentication",
+      "item": [
+        {
+          "name": "Login as Employee (User)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"john@company.com\",\n  \"password\": \"User123!\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/auth/login", "host": ["{{baseUrl}}"], "path": ["auth", "login"] }
+          }
+        },
+        {
+          "name": "Login as Support Staff",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"sarah.support@company.com\",\n  \"password\": \"Support123!\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/auth/login", "host": ["{{baseUrl}}"], "path": ["auth", "login"] }
+          }
+        },
+        {
+          "name": "Login as Admin",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@company.com\",\n  \"password\": \"Admin123!\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/auth/login", "host": ["{{baseUrl}}"], "path": ["auth", "login"] }
+          }
+        },
+        {
+          "name": "Register New Employee",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Michael Scott\",\n  \"email\": \"michael@company.com\",\n  \"password\": \"DunderMifflin123!\",\n  \"department\": \"Sales\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/auth/register", "host": ["{{baseUrl}}"], "path": ["auth", "register"] }
+          }
+        },
+        {
+          "name": "Get Current Authenticated User",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/auth/me", "host": ["{{baseUrl}}"], "path": ["auth", "me"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Tickets Management",
+      "item": [
+        {
+          "name": "List Tickets (Role-Filtered)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/tickets?status=Open&priority=High",
+              "host": ["{{baseUrl}}"],
+              "path": ["tickets"],
+              "query": [
+                { "key": "status", "value": "Open" },
+                { "key": "priority", "value": "High" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create New Ticket",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"VPN connection drops every 10 minutes\",\n  \"description\": \"Experiencing frequent disconnects on the Boston gateway.\",\n  \"category\": \"Network\",\n  \"priority\": \"High\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/tickets", "host": ["{{baseUrl}}"], "path": ["tickets"] }
+          }
+        },
+        {
+          "name": "Get Ticket Details & Comments",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/tickets/:ticketId", "host": ["{{baseUrl}}"], "path": ["tickets", ":ticketId"] }
+          }
+        },
+        {
+          "name": "Claim Ticket (Support/Admin)",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/tickets/:ticketId/claim", "host": ["{{baseUrl}}"], "path": ["tickets", ":ticketId", "claim"] }
+          }
+        },
+        {
+          "name": "Update Ticket Status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"Resolved\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/tickets/:ticketId/status", "host": ["{{baseUrl}}"], "path": ["tickets", ":ticketId", "status"] }
+          }
+        },
+        {
+          "name": "Reopen Ticket (User only if Resolved)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"In Progress\",\n  \"reason\": \"Monitor still blinks black after dock replacement.\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/tickets/:ticketId/status", "host": ["{{baseUrl}}"], "path": ["tickets", ":ticketId", "status"] }
+          }
+        },
+        {
+          "name": "Change Priority",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"priority\": \"Critical\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/tickets/:ticketId/priority", "host": ["{{baseUrl}}"], "path": ["tickets", ":ticketId", "priority"] }
+          }
+        },
+        {
+          "name": "Delete Ticket (Admin Only)",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/tickets/:ticketId", "host": ["{{baseUrl}}"], "path": ["tickets", ":ticketId"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Comments & Internal Notes",
+      "item": [
+        {
+          "name": "Add Public Reply",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"message\": \"I restarted the access point. Please try connecting again.\",\n  \"type\": \"comment\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/tickets/:ticketId/comments", "host": ["{{baseUrl}}"], "path": ["tickets", ":ticketId", "comments"] }
+          }
+        },
+        {
+          "name": "Add Staff Internal Note (Hidden from Users)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"message\": \"INTERNAL NOTE: User MAC address 00:1A:2B:3C:4D:5E had a DHCP lease conflict.\",\n  \"type\": \"internal\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/tickets/:ticketId/comments", "host": ["{{baseUrl}}"], "path": ["tickets", ":ticketId", "comments"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. User Management (Admin Only)",
+      "item": [
+        {
+          "name": "List All Users",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/users", "host": ["{{baseUrl}}"], "path": ["users"] }
+          }
+        },
+        {
+          "name": "Create Support Staff Account",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"David Kim\",\n  \"email\": \"david.support@company.com\",\n  \"password\": \"Support123!\",\n  \"role\": \"support\",\n  \"specialty\": \"Identity & Cloud Access\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/users", "host": ["{{baseUrl}}"], "path": ["users"] }
+          }
+        },
+        {
+          "name": "Toggle User Active/Disabled",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/users/:userId/status", "host": ["{{baseUrl}}"], "path": ["users", ":userId", "status"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. Dashboard Analytics",
+      "item": [
+        {
+          "name": "Get Role-Based Dashboard Metrics",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/dashboard/stats", "host": ["{{baseUrl}}"], "path": ["dashboard", "stats"] }
+          }
+        }
+      ]
+    }
+  ]
+}
