@@ -4,9 +4,6 @@ from datetime import datetime
 from bson import ObjectId
 import pymongo
 
-# We attempt to connect to a real MongoDB instance (e.g. MongoDB Atlas or local MongoDB).
-# If none is available (common in lightweight dev/eval containers), we seamlessly use mongomock
-# with JSON disk persistence so that tickets, users, and comments are fully preserved across restarts!
 
 DATA_FILE = os.path.join(os.path.dirname(__file__), "data_store.json")
 

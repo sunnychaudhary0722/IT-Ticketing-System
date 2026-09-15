@@ -1,8 +1,27 @@
+# Frontend
 node_modules/
 build/
 dist/
 coverage/
-.DS_Store
-*.log
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+env/
+
+# Environment variables
 .env*
 !.env.example
+
+# Local database / data
+backend/data_store.json
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db

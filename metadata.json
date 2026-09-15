@@ -1,6 +1,6 @@
 {
   "name": "IT Help Desk & Ticketing System",
-  "description": "A full-stack IT Help Desk & Ticketing System with Express REST API, JWT authentication, role-based access control, ticket lifecycle tracking, and internal notes.",
+  "description": "A full-stack IT Help Desk & Ticketing System with React frontend, Python Flask REST API, JWT authentication, role-based access control, ticket lifecycle tracking, and internal notes.",
   "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+  "majorCapabilities": []
 }
